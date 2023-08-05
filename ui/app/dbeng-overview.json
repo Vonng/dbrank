@@ -1,0 +1,644 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "datasource",
+                    "uid": "grafana"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            },
+            {
+                "datasource": {
+                    "type": "postgres",
+                    "uid": "ds-meta"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "red",
+                "name": "Joint",
+                "target": {
+                    "editorMode": "code",
+                    "format": "table",
+                    "rawQuery": true,
+                    "rawSql": "SELECT *\nFROM (VALUES ('2026-05-01'::DATE, 'PostgreSQL -> 3th', 'SQL Server'),\n             ('2031-07-01'::DATE, 'PostgreSQL -> 2nd', 'MySQL'),\n             ('2031-10-01'::DATE, 'PostgreSQL -> 1st', 'Oracle')\n     ) AS t(time , text, tags)",
+                    "refId": "Annotation",
+                    "sql": {
+                        "columns": [
+                            {
+                                "parameters": [],
+                                "type": "function"
+                            }
+                        ],
+                        "groupBy": [
+                            {
+                                "property": {
+                                    "type": "string"
+                                },
+                                "type": "groupBy"
+                            }
+                        ],
+                        "limit": 50
+                    }
+                }
+            }
+        ]
+    },
+    "description": "https://db-engines.com/en/ranking_trend",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [
+        {
+            "asDropdown": true,
+            "icon": "external link",
+            "includeVars": false,
+            "keepTime": false,
+            "tags": [
+                "DBRANK"
+            ],
+            "targetBlank": false,
+            "title": "DBRANK",
+            "tooltip": "",
+            "type": "dashboards",
+            "url": ""
+        }
+    ],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "ds-prometheus"
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 10,
+                "x": 0,
+                "y": 0
+            },
+            "id": 4,
+            "options": {
+                "code": {
+                    "language": "plaintext",
+                    "showLineNumbers": false,
+                    "showMiniMap": false
+                },
+                "content": "# DB-Engines Ranking - Trend Popularity\n\nDB-Engines Ranking database management systems according to their popularity\n\nhttps://db-engines.com/en/ranking_trend. \n\nPostgreSQL's rank will be become:\n\n- **3rd** over **SQL Server** in 2026-06\n- **2nd** over **MySQL** in 2031-07\n- **1st** over **Oracle** in 2031-10\n",
+                "mode": "markdown"
+            },
+            "pluginVersion": "10.0.3",
+            "type": "text"
+        },
+        {
+            "datasource": {
+                "type": "postgres",
+                "uid": "ds-meta"
+            },
+            "description": "Slope: Estimate ",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "align": "auto",
+                        "cellOptions": {
+                            "type": "auto"
+                        },
+                        "inspect": false
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byType",
+                            "options": "number"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.width",
+                                "value": 100
+                            },
+                            {
+                                "id": "decimals",
+                                "value": 1
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Next Delta"
+                        },
+                        "properties": [
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "red",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "green",
+                                            "value": 0
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "id": "custom.cellOptions",
+                                "value": {
+                                    "type": "color-text"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Prev Delta"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.cellOptions",
+                                "value": {
+                                    "type": "color-text"
+                                }
+                            },
+                            {
+                                "id": "thresholds",
+                                "value": {
+                                    "mode": "absolute",
+                                    "steps": [
+                                        {
+                                            "color": "red",
+                                            "value": null
+                                        },
+                                        {
+                                            "color": "green",
+                                            "value": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 14,
+                "x": 10,
+                "y": 0
+            },
+            "id": 5,
+            "options": {
+                "cellHeight": "sm",
+                "footer": {
+                    "countRows": false,
+                    "fields": "",
+                    "reducer": [
+                        "sum"
+                    ],
+                    "show": false
+                },
+                "showHeader": true,
+                "sortBy": [
+                    {
+                        "desc": true,
+                        "displayName": "This Year"
+                    }
+                ]
+            },
+            "pluginVersion": "10.0.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "ds-meta"
+                    },
+                    "editorMode": "code",
+                    "format": "table",
+                    "rawQuery": true,
+                    "rawSql": "SELECT t.db,\n       t.score                          AS this_year,\n       p.score                          AS prev_year,\n       t.score + n.slope * 365          AS next_year,\n       t.score - p.score                AS delta,\n       round(n.slope::NUMERIC * 365, 3) AS next_incr\nFROM (SELECT db, score FROM dbrank.db_engine_trend WHERE time = '2023-08-01') t\n         JOIN\n         (SELECT db, score FROM dbrank.db_engine_trend WHERE time = '2022-08-01') p ON t.db = p.db\n         JOIN\n     dbrank.v_db_engine_regression n ON t.db = n.db\nORDER BY this_year DESC NULLS LAST;",
+                    "refId": "A",
+                    "sql": {
+                        "columns": [
+                            {
+                                "parameters": [],
+                                "type": "function"
+                            }
+                        ],
+                        "groupBy": [
+                            {
+                                "property": {
+                                    "type": "string"
+                                },
+                                "type": "groupBy"
+                            }
+                        ],
+                        "limit": 50
+                    }
+                }
+            ],
+            "transformations": [
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {},
+                        "indexByName": {},
+                        "renameByName": {
+                            "db": "Database",
+                            "delta": "Prev Delta",
+                            "next_incr": "Next Delta",
+                            "next_year": "Next Year",
+                            "prev_year": "Prev Year",
+                            "score": "Score",
+                            "score_slope": "Slope",
+                            "this_year": "This Year"
+                        }
+                    }
+                }
+            ],
+            "type": "table"
+        },
+        {
+            "datasource": {
+                "type": "postgres",
+                "uid": "ds-meta"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisGridShow": true,
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 3,
+                        "scaleDistribution": {
+                            "log": 10,
+                            "type": "log"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Oracle"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#cc4637d9",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "MySQL"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#f5a673",
+                                    "mode": "fixed"
+                                }
+                            },
+                            {
+                                "id": "custom.fillBelowTo",
+                                "value": "PostgreSQL"
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "Microsoft SQL Server"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "green",
+                                    "mode": "fixed"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "PostgreSQL"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#3e668f",
+                                    "mode": "fixed"
+                                }
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 20
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/.*\\*/"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.lineStyle",
+                                "value": {
+                                    "dash": [
+                                        10,
+                                        10
+                                    ],
+                                    "fill": "dash"
+                                }
+                            },
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": true,
+                                    "tooltip": false,
+                                    "viz": false
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "PostgreSQL*"
+                        },
+                        "properties": [
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "#3e668f",
+                                    "mode": "fixed"
+                                }
+                            },
+                            {
+                                "id": "custom.lineStyle",
+                                "value": {
+                                    "fill": "solid"
+                                }
+                            },
+                            {
+                                "id": "custom.lineWidth",
+                                "value": 1
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 10
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "MySQL*"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 7
+                            },
+                            {
+                                "id": "color",
+                                "value": {
+                                    "fixedColor": "light-blue",
+                                    "mode": "fixed"
+                                }
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 4
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 19,
+                "w": 24,
+                "x": 0,
+                "y": 7
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Last *",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "asc"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "ds-meta"
+                    },
+                    "editorMode": "code",
+                    "format": "time_series",
+                    "group": [],
+                    "hide": false,
+                    "metricColumn": "db",
+                    "rawQuery": true,
+                    "rawSql": "SELECT time AS \"time\", db AS metric, score\nFROM dbrank.db_engine_trend\nWHERE db IN ('Oracle', 'MySQL', 'Microsoft SQL Server', 'PostgreSQL', 'MongoDB',\n             'Redis', 'IBM Db2', 'Elasticsearch', 'Microsoft Access', 'SQLite')\nORDER BY 1, 2",
+                    "refId": "A",
+                    "select": [
+                        [
+                            {
+                                "params": [
+                                    "score"
+                                ],
+                                "type": "column"
+                            }
+                        ]
+                    ],
+                    "sql": {
+                        "columns": [
+                            {
+                                "parameters": [],
+                                "type": "function"
+                            }
+                        ],
+                        "groupBy": [
+                            {
+                                "property": {
+                                    "type": "string"
+                                },
+                                "type": "groupBy"
+                            }
+                        ],
+                        "limit": 50
+                    },
+                    "table": "dbrank.db_engine_trend",
+                    "timeColumn": "time",
+                    "where": []
+                },
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "ds-meta"
+                    },
+                    "editorMode": "code",
+                    "format": "time_series",
+                    "group": [],
+                    "hide": false,
+                    "metricColumn": "none",
+                    "rawQuery": true,
+                    "rawSql": "SELECT\n    time::DATE,\n    CASE db\n        WHEN 'MySQL' THEN 'MySQL*'\n        WHEN 'PostgreSQL' THEN 'PostgreSQL*'\n        WHEN 'Oracle' THEN 'Oracle*'\n        WHEN 'Microsoft SQL Server' THEN 'SQL Server*' END AS name,\n        c.slope * extract(days from time - c.zero) + c.intercept AS value\nFROM generate_series( '2020-01-01'::DATE, $__timeTo()::DATE, '1month'::INTERVAL) AS time\nCROSS JOIN\n    (SELECT db, slope, zero, intercept FROM dbrank.v_db_engine_regression WHERE db IN ('PostgreSQL', 'MySQL', 'Microsoft SQL Server', 'Oracle')) c\nORDER BY time, name ;",
+                    "refId": "B",
+                    "select": [
+                        [
+                            {
+                                "params": [
+                                    "value"
+                                ],
+                                "type": "column"
+                            }
+                        ]
+                    ],
+                    "sql": {
+                        "columns": [
+                            {
+                                "parameters": [],
+                                "type": "function"
+                            }
+                        ],
+                        "groupBy": [
+                            {
+                                "property": {
+                                    "type": "string"
+                                },
+                                "type": "groupBy"
+                            }
+                        ],
+                        "limit": 50
+                    },
+                    "timeColumn": "time",
+                    "where": [
+                        {
+                            "name": "$__timeFilter",
+                            "params": [],
+                            "type": "macro"
+                        }
+                    ]
+                }
+            ],
+            "title": "DBEngine Trending & Prediction",
+            "type": "timeseries"
+        }
+    ],
+    "refresh": "",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [
+        "APP",
+        "Overview",
+        "DBRANK"
+    ],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "2012-10-31T16:00:00.000Z",
+        "to": "2029-12-31T16:00:00.000Z"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "DB-Engine Overview",
+    "uid": "dbeng-overview",
+    "version": 1,
+    "weekStart": "",
+    "author": "Vonng (rh@vonng.com)"
+}
