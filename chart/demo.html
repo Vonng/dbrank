@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+</head>
+<body>
+
+<div id="main" style="width: 1000px;height:800px;"></div>
+<script type="text/javascript">
+
+    // use%, love%, want%, lps
+    var rawData = [[21.2, 60.8, 11.5, 21.6, 2017, "pgsql"], [32.9, 62, 11.4, 24, 2018, "pgsql"], [34.3, 69.6, 13.6, 39.2, 2019, "pgsql"], [36.1, 63.9, 15.6, 27.8, 2020, "pgsql"], [40.42, 70.4, 17.99, 40.8, 2021, "pgsql"], [43.59, 72.08, 19.05, 44.16, 2022, "pgsql"], [45.55, 71.32, 42.3, 42.64, 2023, "pgsql"], [44.3, 49.6, 8.5, -0.8, 2017, "mysql"], [58.7, 48.7, 7.5, -2.6, 2018, "mysql"], [54, 53.9, 8.2, 7.8, 2019, "mysql"], [55.7, 47.1, 9, -5.8, 2020, "mysql"], [50.18, 51.35, 9.76, 2.70, 2021, "mysql"], [46.85, 51.17, 7.99, 2.34, 2022, "mysql"], [41.09, 50.8, 24.4, 1.6, 2023, "mysql"], [21.2, 47.2, 7.2, -5.6, 2017, "sqlite"], [19.7, 48.1, 3.3, -3.8, 2018, "sqlite"], [31.6, 55.6, 7.2, 11.2, 2019, "sqlite"], [31.2, 49.4, 7.7, -1.2, 2020, "sqlite"], [32.18, 54.43, 7.74, 8.86, 2021, "sqlite"], [32.01, 57.51, 8.18, 15.02, 2022, "sqlite"], [30.90, 59.0, 23.0, 18.0, 2023, "sqlite"], [30.8, 54.2, 4.6, 8.4, 2017, "mssql"], [41.2, 51.6, 4.2, 3.2, 2018, "mssql"], [32.8, 57.5, 3.3, 15.0, 2019, "mssql"], [33, 50.9, 3.7, 1.8, 2020, "mssql"], [26.87, 54.08, 3.11, 8.16, 2021, "mssql"], [26.87, 54.95, 2.62, 9.90, 2022, "mssql"], [25.45, 54.7, 15.5, 9.4, 2023, "mssql"], [16.8, 55, 20.8, 10, 2017, "mongo"], [25.9, 55.1, 18.6, 10.2, 2018, "mongo"], [25.5, 59.5, 17.8, 19.0, 2019, "mongo"], [26.4, 56, 19.4, 12, 2020, "mongo"], [27.7, 60.28, 17.86, 20.56, 2021, "mongo"], [28.3, 60.51, 17.26, 21.02, 2022, "mongo"], [25.52, 55.2, 22.7, 10.4, 2023, "mongo"], [11.2, 64.8, 10.6, 29.6, 2017, "redis"], [18, 64.5, 9.7, 29.0, 2018, "redis"], [18.6, 71.3, 10.7, 42.6, 2019, "redis"], [18.3, 66.5, 12.2, 33.0, 2020, "redis"], [20.69, 70.71, 12.58, 41.42, 2021, "redis"], [22.13, 71.04, 14.3, 42.08, 2022, "redis"], [20.41, 69.9, 22.5, 39.8, 2023, "redis"], [16.5, 36.9, 3.8, -26.2, 2017, "oracle"], [11.1, 36.9, 2.3, -26.2, 2018, "oracle"], [16.5, 38.2, 3.4, -23.6, 2019, "oracle"], [16.5, 33.2, 4.2, -33.6, 2020, "oracle"], [12.61, 35.18, 2.8, -29.64, 2021, "oracle"], [11.49, 35.33, 2.24, -29.34, 2022, "oracle"], [9.80, 36.0, 4.9, -28.0, 2023, "oracle"]]
+    var databaseList = ['pgsql', 'mysql', 'sqlite', 'mssql', 'mongo', 'redis', 'oracle']
+    var colorList = ['#4F668A', '#de8e1e', '#83BCE4', '#D6D9D2', '#679443', '#a32f2e', '#f11f1b'];
+    var yearList = [2017, 2018, 2019, 2020, 2021, 2022, 2023]
+    var schema = [
+        {name: '使用率', index: 0, text: '使用率', unit: '%'},
+        {name: '喜爱度', index: 1, text: '喜爱度', unit: '%'},
+        {name: '渴求度', index: 2, text: '渴求度', unit: '%'},
+        {name: '净爱值', index: 3, text: '净爱值', unit: '%'},
+        {name: '年份', index: 4, text: '年份', unit: ''},
+        {name: '数据库', index: 5, text: '数据库', unit: ''},
+    ];
+    var nameMapping = {
+        "pgsql": "PostgreSQL",
+        "mysql": "MySQL",
+        "sqlite": "SQLite",
+        "mssql": "SQL Server",
+        "mongo": "MongoDB",
+        "redis": "Redis",
+        "oracle": "Oracle",
+    }
+
+
+    // database chart movement lines
+    var routes = {}
+    for (var i = 0; i < databaseList.length; i++) {
+        var dbname = databaseList[i]
+        var route = []
+        // filter rawData x/y with dbname
+        for (var j = 0; j < rawData.length; j++) {
+            if (rawData[j][5] === dbname) {
+                route.push([rawData[j][0], rawData[j][3]])   // use% as x , love% as y
+            }
+        }
+        routes[dbname] = {
+            symbolSize: 12,
+            symbol: 'rect',
+            showAllSymbol: true,
+            type: 'line',
+            lineStyle: {
+                color: colorList[i] + '66',
+                width: 1,
+                type: 'dashed'
+            },
+            itemStyle: {},
+            showSymbol: true,
+            symbolSize: 2,
+            data: route
+        }
+    }
+
+    // yearly data series
+    var series = []
+    for (var i = 0; i < yearList.length; i++) {
+        var year = yearList[i]
+        var yearData = []
+        // filter rawData x/y with dbname
+        for (var j = 0; j < rawData.length; j++) {
+            if (rawData[j][4] === year) {
+                yearData.push([
+                    // x: use% , y: love% , z: want% , value: net love%
+                    rawData[j][0], rawData[j][3], rawData[j][2], rawData[j][1], rawData[j][4], rawData[j][5]
+                ])
+            }
+        }
+        series.push([routes['pgsql'], routes['mysql'], routes['sqlite'], routes['mssql'], routes['mongo'], routes['redis'], routes['oracle'], {
+            name: yearList[n],
+            type: 'scatter',
+            colorBy: 'data',
+            label: {
+                show: true,
+                fontSize: 10,
+                formatter: function (param) {
+                    return nameMapping[param.data[5]];
+                },
+            },
+            itemStyle: {
+                borderWidth: 0,
+                opacity: 0.8
+            },
+            data: yearData,
+            symbolSize: function (val) {
+                return 8 + Math.sqrt(val[0] * Math.abs(val[3])) * 2;
+            }
+        }])
+    }
+
+
+    option = {
+        baseOption: {
+            color: colorList,
+            timeline: { // 时间轴
+                axisType: 'category',
+                orient: 'vertical',
+                autoPlay: true,
+                inverse: true,
+                playInterval: 1200,
+                left: null,
+                right: 0,
+                top: 100,
+                bottom: 100,
+                width: 50,
+                height: null,
+                symbol: 'none',
+                checkpointStyle: {
+                    borderWidth: 5
+                },
+                controlStyle: {
+                    showNextBtn: true, showPrevBtn: true
+                },
+                data: []
+            },
+            title: [{
+                text: yearList[0], textAlign: 'center', bottom: '10%', right: '0%', textStyle: {
+                    fontSize: 100
+                }
+            }, {
+                text: 'StackOverflow 2017-2023 数据库流行度/喜爱度趋势',
+                left: 'center',
+                top: 10,
+                textStyle: {fontWeight: 'normal', fontSize: 20}
+            }],
+            tooltip: {
+                padding: 5, borderWidth: 1, formatter: function (obj) {
+                    var v = obj.value;
+                    return nameMapping[v[5]] + '<br>' + '使用率' + '：' + v[0] + '%<br>' + '喜爱率' + '：' + v[1] + '%<br>' + '渴求度' + '：' + v[2] + '%<br>' + '净喜爱指数' + '：' + v[3] + '%';
+                }
+            },
+            grid: {
+                top: 100, containLabel: true, left: 30, right: '110'
+            },
+            xAxis: {
+                name: '流行度', max: 60, min: 0, nameGap: 5, nameTextStyle: {
+                    fontSize: 18
+                }, splitLine: {
+                    show: true
+                }, minorSplitLine: {
+                    show: true
+                }, axisLine: {
+                    show: true
+                }, axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            yAxis: {
+                type: 'value', name: '净喜爱度', max: 60, min: -40, nameGap: 5, nameTextStyle: {
+                    fontSize: 18
+                }, minorSplitLine: {
+                    show: true
+                }, splitLine: {
+                    interval: 5,
+                    show: true
+                }, axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            series: series[0],
+            animationDurationUpdate: 1000,
+            animationEasingUpdate: 'quinticInOut'
+        }, options: []
+    };
+
+    for (var n = 0; n < yearList.length; n++) {
+        option.baseOption.timeline.data.push(yearList[n]);
+        option.options.push({
+            title: {show: true, text: yearList[n] + ''},
+            series: series[n]
+        });
+    }
+
+
+    var echartInstance = echarts.init(document.getElementById('main'));
+    echartInstance.setOption(option)
+
+</script>
+</body>
+</html>
