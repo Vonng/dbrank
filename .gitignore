@@ -1,29 +1,9 @@
 # IDE files
 .idea
 .code
-isd.iml
+dbrank.iml
 
 # macos files
 .DS_Store
 
-# parser binary: can be built from source or download via bin/get-parser
-bin/isd
-dist/*.tar.gz
-bin/isd*.tar.gz
-
-# temp dir
 temp/
-
-# data files (can be downloaded via Internet)
-data/daily/*.csv.gz
-data/daily/*.tar.gz
-data/hourly/*.tar.gz
-data/*.tar.gz
-data/daily.csv
-
-# station metadata
-data/isd-history.csv
-data/isd-inventory.csv.z
-data/history.csv.gz
-data/station.csv.gz
-data/daily.csv.gz
